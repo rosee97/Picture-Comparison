@@ -8,6 +8,7 @@ sdog2 = zeros(2, 45);
 sdog3 = zeros(2, 45);
 sdog4 = zeros(2, 45);
 sdog5 = zeros(2, 45);
+corrInfo = zeros(1, 5);
 
 for i=1:1:5,
     

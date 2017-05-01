@@ -10,16 +10,17 @@ function score = myCorrelationMatch(imgA, imgB)
 %  you must implement everything yourself.
 %
 
+
+
+
+newB = imresize(imgB, size(imgA));
+
 [ROWS_A, COLS_A] = size(imgA);
-
-
-B = imresize(imgB, size(imgA)); 
-    
-[ROWS_B, COLS_B] = size(B);
+[ROWS_B, COLS_B] = size(newB);
 
 
 aVec = double(reshape(imgA,ROWS_A*COLS_A,1));
-bVec = double(reshape(imgB,ROWS_B*COLS_B,1));
+bVec = double(reshape(newB ,ROWS_B*COLS_B,1));
 
 %According to the formula
 
