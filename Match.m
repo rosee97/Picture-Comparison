@@ -1,66 +1,90 @@
 %%%
 % set names of query image and target image
-sdog_folder = './SampleDogs/';
-dbdogs_folder = './CroppedDogDB/';
-
-rowDogs={'dog1','dog2','dog3','dog4','dog5','dog6','dog7','dog8','dog9','dog10',...
-    'dog11','dog12','dog13','dog14','dog15','dog16','dog17','dog18','dog19','dog20',...
-    'dog21','dog22','dog23','dog24','dog25','dog26','dog27','dog28','dog29','dog30',...
-    'dog31','dog32','dog33','dog34','dog35','dog36','dog37','dog38','dog39','dog40',...
-    'dog41','dog42','dog43','dog44','dog45'};
-d1=zeros(45,1);
-d2=zeros(45,1);
-d3=zeros(45,1);
-d4=zeros(45,1);
-d5=zeros(45,1);
-
-max=zeros(1,5);
-
 
 for i=1:1:5,
-    
-    maxCorrScore=0;
-    SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
-    Isd= imread(SampleDog);
-    IcsdGrayScale = rgb2gray(Isd);
+    SampleDog=['d',num2str(i),'.png'];
+    I= imread(SampleDog);
+    Igray = rgb2gray(I);
+    SAM_ROWS = size(I,1);
+    SAM_COLS = size(I,2);
     
     for j=1:1:45,
-        
-    DBDogs=[dbdogs_folder,'dog',num2str(j),'.png'];
-    Idb= imread(DBDogs);
-    IqdbGrayScale = rgb2gray(Idb);
+    DBDogs=['dog',num2str(J),'.png'];
+    Iq= imread(DBDogs);
+    Iqgray= rgb2gray(Iq);
 
-    %Compute the correlation match score
+    DB_ROWS= size(Iq,1);
+    DB_COLS= size(Iq,2);
 
-    currCorrScore = myCorrelationMatch(IcsdGrayScale, IqdbGrayScale);
-    
-    %Store the correlation coefficient
-    
-    if i==1
-        d1(j,1)=currCorrScore;
-    elseif i==2
-        d2(j,1)=currCorrScore;
-    elseif i==3
-        d3(j,1)=currCorrScore;
-    elseif i==4
-        d4(j,1)=currCorrScore;
-    elseif i==5
-        d5(j,1)=currCorrScore;
-    end
-    
-    %Pick the most three closely pics
-    if (currCorrScore > maxCorrScore) 
+    XSHIFT= 10;
+    YSHIFT= 10;
+
+    % initialize position vector used to display
+    % the cropping rectangle
+    %
+    % [ x y with height]
+
+    pos = [0 0 0 0];
+
+    %%%
+    % initialize variables used to track the
+    % location where cropping achieves its
+    % maximum score
+    %%
+    maxCorrScore= -1000;%initialize to large neg value so always find a max
+    maxXCorr= -1;       %initialize to invalid x-coordinate to make fail stop
+    maxYCorr= -1;       %initialize to invalid y-coordinate to make fial stop
+
+    currCorrScore= maxCorrScore;  %set in search, but must still intialize
+    totalTime=0;
+
+    for y=1:YSHIFT:SAM_ROWS-DB_ROWS,
+       showedMiddle= false;
+       for x=1:XSHIFT:SAM_COLS-DB_COLS,
+
+          % note the crop window returns region of image one pixel
+          % wider and one pixel taller so we specify (CROP_COLS-1)
+          % and (CROP_ROWS-1) here so that cropped region is same
+          % size as query image
+
+
+          Ic = imcrop(I,[x y (DB_COLS-1)  (DB_ROWS-1)]); 
+
+        %%
+        % to simplify the match score, we will do it with grayscale
+        % images instead of color, thus freeing us from having to
+        % deal with three color planes (red, green, blue).
+        %%
+          IcGrayScale = rgb2gray(Ic);
+          IqGrayScale = rgb2gray(Iq);
+
+        %%%
+        % compute the correlation match score
+        %%
+        currCorrScore = myCorrelationMatch(IcGrayScale, IqGrayScale);
+        %%
+        % If you get a bigger correlation score, record
+        % the (x,y) coordinates of upper left corner
+        %%
+        if (currCorrScore > maxCorrScore) 
           maxCorrScore= currCorrScore;
           maxXCorr= x;
           maxYCorr= y;
-    end
-    end
-    max(1,i)=maxCorrScore;
-   
-end
+        end
 
-T=table(d1,d2,d3,d4,d5,...
-    'RowNames',dogs) 
+       end
+    end
+    
+    %Store the correlation coefficient
+    maxCorrScore;
+    
 
-sorted_d1=sort(d1,'descend');
-sorted_d1(1:1:3,1)
+    end 
+end 
+
+% imshow(I);
+% pos= [ maxXCorr maxYCorr CROP_COLS CROP_ROWS];
+% rectangle('Position',pos,'edgecolor','r','linewidth',3);
+% 
+% disp(sprintf('Total time is: %.4g  ', totalTime))
+% disp(sprintf('Correlation Coefficient is: %.4g  ', maxCorrScore))
