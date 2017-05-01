@@ -1,9 +1,16 @@
+
 clc; clear; close all
+
+clc;
+clear; 
+close all;
+
 %%%
 % set names of query image and target image
 sdog_folder = './SampleDogs/';
 dbdogs_folder = './CroppedDogDB/';
 origindogs_folder='./DogDataBase/';
+
 
 rowDogs={'dog1','dog2','dog3','dog4','dog5','dog6','dog7','dog8','dog9','dog10',...
     'dog11','dog12','dog13','dog14','dog15','dog16','dog17','dog18','dog19','dog20',...
@@ -16,16 +23,37 @@ d3=zeros(45,1);
 d4=zeros(45,1);
 d5=zeros(45,1);
 
+% 
+sdog = {};
+
+% arrays with color
+% sdog1 = zeros(3, 45);
+% sdog2 = zeros(3, 45);
+% sdog3 = zeros(3, 45);
+% sdog4 = zeros(3, 45);
+% sdog5 = zeros(3, 45);
+
+maxCorrScores = zeros(5,2);
+
+%maxCorrScores = zeros(5,4);
+
+corrInfo = {};
+% maxColorCorrScore = 0.0;
+closestGreyImage = '';
+% closestColorImage = '';
+counter = 1;
+counter2 = 2;
+
+
 max=zeros(1,5);
 
 
 for i=1:1:5
-    
+
     SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
     Isd= imread(SampleDog);
     IcsdGrayScale = rgb2gray(Isd);
-    currCorrScore = -1000;
-    maxCorrScore = -1000;
+
     
     for j=1:1:45
 
@@ -39,6 +67,39 @@ for i=1:1:5
 
         %Store the correlation coefficient
 
+
+end
+
+
+for i = 1:1:5
+
+    sdFileName = [ 'd',num2str(i),'.png'];
+    SampleDog=[sdog_folder, sdFileName ] ;
+    IsdbColor = imread(SampleDog);
+    IcsdbGrayScale = rgb2gray(IsdbColor);
+    currCorrScore = -1000;
+    maxCorrScore = -1000;
+    
+    for j=1:1:45,
+        
+        dbFileName = [ 'dog', num2str(j),'.png'];
+        DBDogs= [dbdogs_folder,dbFileName];
+        IdbColor = imread(DBDogs);
+        IqdbGrayScale = rgb2gray(IdbColor);
+
+            %%%
+            % compute the correlation match score
+            %%
+        currCorrScore = myCorrelationMatch(IcsdbGrayScale, IqdbGrayScale);
+
+        sdog = [sdog, {string(dbFileName), currCorrScore}];
+
+        if (currCorrScore > maxCorrScore) 
+          maxCorrScore= currCorrScore;
+          closestGreyImage = j;
+          
+        end
+        
         if i==1
             d1(j,1)=currCorrScore;
         elseif i==2
@@ -51,14 +112,18 @@ for i=1:1:5
             d5(j,1)=currCorrScore;
         end
 
-        %Pick the most three closely pics
-        if (currCorrScore > maxCorrScore) 
-              maxCorrScore= currCorrScore;
-        end
     end
         max(1,i)=maxCorrScore;
 
-end
+        
+        end
+
+        corrInfo = [corrInfo, {sdog}];
+
+        maxCorrScores(i,1) = closestGreyImage;
+        maxCorrScores(i,2) = maxCorrScore;
+
+        end
 
 T=table(d1,d2,d3,d4,d5,...
     'RowNames',rowDogs) ;
@@ -72,13 +137,13 @@ sorted_d3=sort(d3,'descend');
 sorted_d4=sort(d4,'descend');
 sorted_d5=sort(d5,'descend');
 %Get the name of the image
+
 for b = 1:1:5
-    
     figure(b);
     subplot(2,2,1)
     imshow([sdog_folder,'d',num2str(b),'.png']);
     title(['Sample: ',num2str(b)]);
-    
+
     if b==1
     figure(b);
      for k=1:1:3
@@ -108,7 +173,9 @@ for b = 1:1:5
             if d3(q,1)==sorted_d3(l,1)
                 subplot(2,2,l+1);
                 imshow([origindogs_folder,'dog',num2str(q),'.png']);
-                title(['Dog: ',num2str(q),' Corr Score:', num2str(d3(q,1))])
+                str = num2str(d3(q,1));
+                str = str(1:5);
+                title(['Dog: ',num2str(q),' Corr Score:', str])
             end 
         end
      end
@@ -118,7 +185,9 @@ for b = 1:1:5
             if d4(q,1)==sorted_d4(m,1)
                 subplot(2,2,m+1);
                 imshow([origindogs_folder,'dog',num2str(q),'.png']);
-                title(['Dog: ',num2str(q),' Corr Score:', num2str(d4(q,1))])                
+                str = num2str(d4(q,1));
+                str = str(1:5);
+                title(['Dog: ',num2str(q),' Corr Score:', str])                
             end 
         end
      end
