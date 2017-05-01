@@ -1,6 +1,5 @@
 %%%
 % set names of query image and target image
-
 for i=1:1:5,
     SampleDog=['d',num2str(i),'.png'];
     I= imread(SampleDog);
