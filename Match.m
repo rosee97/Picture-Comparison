@@ -19,7 +19,9 @@ max=zeros(1,5);
 
 
 for i=1:1:5,
-    
+    figure(i);
+    subplot(2,2,1)
+    imshow([sdog_folder,'d',num2str(i),'.png']);
     maxCorrScore=0;
     SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
     Isd= imread(SampleDog);
@@ -52,8 +54,6 @@ for i=1:1:5,
     %Pick the most three closely pics
     if (currCorrScore > maxCorrScore) 
           maxCorrScore= currCorrScore;
-          maxXCorr= x;
-          maxYCorr= y;
     end
     end
     max(1,i)=maxCorrScore;
@@ -61,20 +61,67 @@ for i=1:1:5,
 end
 
 T=table(d1,d2,d3,d4,d5,...
-    'RowNames',dogs) 
+    'RowNames',rowDogs) ;
 
 %Pick the most three
 mostThree=zeros(1,3);
 %Sorted the correlation 
 sorted_d1=sort(d1,'descend');
+sorted_d2=sort(d2,'descend');
+sorted_d3=sort(d3,'descend');
+sorted_d4=sort(d4,'descend');
+sorted_d5=sort(d5,'descend');
 %Get the name of the image
-for k=1:1:3
-    for q=1:1:45
-        if d1(q,1)==sorted_d1(k,1)
-            figure(k);
-            imshow([origindogs_folder,'dog',num2str(q),'.png']);
-        end 
+for b = 1:1:k;
+    if i==1
+     for k=1:1:3
+        for q=1:1:45
+            if d1(q,1)==sorted_d1(k,1)
+                subplot(2,2,k+1);
+                imshow([origindogs_folder,'dog',num2str(q),'.png']);
+            end 
+        end
+     end
+    elseif i==2
+     for k=1:1:3
+        for q=1:1:45
+            if d2(q,1)==sorted_d2(k,1)
+                subplot(2,2,k+1);
+                imshow([origindogs_folder,'dog',num2str(q),'.png']);
+            end 
+        end
+     end
+    elseif i==3
+     for k=1:1:3
+        for q=1:1:45
+            if d3(q,1)==sorted_d3(k,1)
+                subplot(2,2,k+1);
+                imshow([origindogs_folder,'dog',num2str(q),'.png']);
+            end 
+        end
+     end
+    elseif i==4
+     for k=1:1:3
+        for q=1:1:45
+            if d4(q,1)==sorted_d4(k,1)
+                subplot(2,2,k+1);
+                imshow([origindogs_folder,'dog',num2str(q),'.png']);
+            end 
+        end
+     end
+    elseif i==5
+     for k=1:1:3
+        for q=1:1:45
+            if d5(q,1)==sorted_d5(k,1)
+                subplot(2,2,k+1);
+                imshow([origindogs_folder,'dog',num2str(q),'.png']);
+            end 
+        end
+     end
     end
-    
-end 
+end
+
+
+
+
 
