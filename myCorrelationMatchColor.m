@@ -1,4 +1,4 @@
-function score = myCorrelationMatch(imgA, imgB)
+function [ score ] = myCorrelationMatchColor(imgA, imgB)
 %
 %  write your correlation implementation
 %
@@ -10,14 +10,14 @@ function score = myCorrelationMatch(imgA, imgB)
 %  you must implement everything yourself.
 %
 
-newB = imresize(imgB, size(imgA));
 
-[ROWS_A, COLS_A] = size(imgA);
-[ROWS_B, COLS_B] = size(newB);
+[ROWS_A, COLS_A, z_a] = size(imgA);
+newB = imresize(imgB, [ROWS_A, COLS_A, z_a]);
+[ROWS_B, COLS_B, z_b] = size(newB);
 
 
-aVec = double(reshape(imgA,ROWS_A*COLS_A,1));
-bVec = double(reshape(newB ,ROWS_B*COLS_B,1));
+aVec = double(reshape(imgA,ROWS_A*COLS_A*z_a,1));
+bVec = double(reshape(newB ,ROWS_B*COLS_B*z_b,1));
 
 %According to the formula
 
@@ -28,3 +28,4 @@ coeff = numerator / denominator;
 
 score = coeff;
 end
+

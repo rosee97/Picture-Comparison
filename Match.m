@@ -1,50 +1,68 @@
+clc;
+clear; 
+close all;
 %%%
 % set names of query image and target image
 sdog_folder = './SampleDogs/';
 dbdogs_folder = './CroppedDogDB/';
 
-sdog1 = zeros(2, 45);
-sdog2 = zeros(2, 45);
-sdog3 = zeros(2, 45);
-sdog4 = zeros(2, 45);
-sdog5 = zeros(2, 45);
+% 
+sdog = {};
+
+% arrays with color
+% sdog1 = zeros(3, 45);
+% sdog2 = zeros(3, 45);
+% sdog3 = zeros(3, 45);
+% sdog4 = zeros(3, 45);
+% sdog5 = zeros(3, 45);
+
+maxCorrScores = zeros(5,2);
+
+%maxCorrScores = zeros(5,4);
+
+corrInfo = {};
+% maxColorCorrScore = 0.0;
+closestGreyImage = '';
+% closestColorImage = '';
+counter = 1;
+counter2 = 2;
 
 for i=1:1:5,
     
-    SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
-    Isd= imread(SampleDog);
-    IcsdGrayScale = rgb2gray(Isd);
-%   SAM_ROWS = size(I,1);
-%    SAM_COLS = size(I,2);
+    maxCorrScore = 0.0; 
+    sdFileName = [ 'd',num2str(i),'.png'];
+    SampleDog=[sdog_folder, sdFileName ] ;
+    IsdbColor = imread(SampleDog);
+    IcsdbGrayScale = rgb2gray(IsdbColor);
     
-    for j=1:1:10,
-        
-    DBDogs=[dbdogs_folder,'dog',num2str(j),'.png'];
-    Idb= imread(DBDogs);
-    IqdbGrayScale = rgb2gray(Idb);
+    for j=1:1:45,
+    dbFileName = [ 'dog', num2str(j),'.png'];
+    DBDogs= [dbdogs_folder,dbFileName];
+    IdbColor = imread(DBDogs);
+    IqdbGrayScale = rgb2gray(IdbColor);
 
         %%%
         % compute the correlation match score
         %%
-    currCorrScore = myCorrelationMatch(IcsdGrayScale, IqdbGrayScale);
-    corrInfo(1, i(1,j)) = currCorrScore;
-    corrInfo(1, i(2,j)) = ['dog', num2str(j), '.png'];
-        %%
-        % If you get a bigger correlation score, record
-        % the (x,y) coordinates of upper left corner
-        %%
-        
-        if (currCorrScore > maxCorrScore) 
-          maxCorrScore= currCorrScore;
-          maxXCorr= x;
-          maxYCorr= y;
-        end
+    currCorrScore = myCorrelationMatch(IcsdbGrayScale, IqdbGrayScale);
 
-       end
-    end
+    sdog = [sdog, {string(dbFileName), currCorrScore}];
     
-    %Store the correlation coefficient
-    maxCorrScore;
+    if (currCorrScore > maxCorrScore) 
+      maxCorrScore= currCorrScore;
+
+      closestGreyImage = j;
+    end
+  
+    end
+        
+    corrInfo = [corrInfo, {sdog}];
+    
+    maxCorrScores(i,1) = closestGreyImage;
+    maxCorrScores(i,2) = maxCorrScore;
+    
+end
+
     
 
 % imshow(I);
