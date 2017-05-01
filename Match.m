@@ -3,53 +3,64 @@
 sdog_folder = './SampleDogs/';
 dbdogs_folder = './CroppedDogDB/';
 
-sdog1 = zeros(2, 45);
-sdog2 = zeros(2, 45);
-sdog3 = zeros(2, 45);
-sdog4 = zeros(2, 45);
-sdog5 = zeros(2, 45);
+rowDogs={'dog1','dog2','dog3','dog4','dog5','dog6','dog7','dog8','dog9','dog10',...
+    'dog11','dog12','dog13','dog14','dog15','dog16','dog17','dog18','dog19','dog20',...
+    'dog21','dog22','dog23','dog24','dog25','dog26','dog27','dog28','dog29','dog30',...
+    'dog31','dog32','dog33','dog34','dog35','dog36','dog37','dog38','dog39','dog40',...
+    'dog41','dog42','dog43','dog44','dog45'};
+d1=zeros(45,1);
+d2=zeros(45,1);
+d3=zeros(45,1);
+d4=zeros(45,1);
+d5=zeros(45,1);
+
+max=zeros(1,5);
+
 
 for i=1:1:5,
     
+    maxCorrScore=0;
     SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
     Isd= imread(SampleDog);
     IcsdGrayScale = rgb2gray(Isd);
-%   SAM_ROWS = size(I,1);
-%    SAM_COLS = size(I,2);
     
-    for j=1:1:10,
+    for j=1:1:45,
         
     DBDogs=[dbdogs_folder,'dog',num2str(j),'.png'];
     Idb= imread(DBDogs);
     IqdbGrayScale = rgb2gray(Idb);
 
-        %%%
-        % compute the correlation match score
-        %%
+    %Compute the correlation match score
+
     currCorrScore = myCorrelationMatch(IcsdGrayScale, IqdbGrayScale);
-    corrInfo(1, i(1,j)) = currCorrScore;
-    corrInfo(1, i(2,j)) = ['dog', num2str(j), '.png'];
-        %%
-        % If you get a bigger correlation score, record
-        % the (x,y) coordinates of upper left corner
-        %%
-        
-        if (currCorrScore > maxCorrScore) 
+    
+    %Store the correlation coefficient
+    
+    if i==1
+        d1(j,1)=currCorrScore;
+    elseif i==2
+        d2(j,1)=currCorrScore;
+    elseif i==3
+        d3(j,1)=currCorrScore;
+    elseif i==4
+        d4(j,1)=currCorrScore;
+    elseif i==5
+        d5(j,1)=currCorrScore;
+    end
+    
+    %Pick the most three closely pics
+    if (currCorrScore > maxCorrScore) 
           maxCorrScore= currCorrScore;
           maxXCorr= x;
           maxYCorr= y;
-        end
-
-       end
     end
-    
-    %Store the correlation coefficient
-    maxCorrScore;
-    
+    end
+    max(1,i)=maxCorrScore;
+   
+end
 
-% imshow(I);
-% pos= [ maxXCorr maxYCorr CROP_COLS CROP_ROWS];
-% rectangle('Position',pos,'edgecolor','r','linewidth',3);
-% 
-% disp(sprintf('Total time is: %.4g  ', totalTime))
-% disp(sprintf('Correlation Coefficient is: %.4g  ', maxCorrScore))
+T=table(d1,d2,d3,d4,d5,...
+    'RowNames',dogs) 
+
+sorted_d1=sort(d1,'descend');
+sorted_d1(1:1:3,1)
