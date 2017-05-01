@@ -12,14 +12,14 @@ function score = myCorrelationMatch(imgA, imgB)
 
 [ROWS_A, COLS_A] = size(imgA);
 
+[ROWS_B, COLS_B] = size(imgB);
 
-B = imresize(imgB, size(imgA)); 
+A = imresize(imA, 
     
-[ROWS_B, COLS_B] = size(B);
+    
 
-
-aVec = double(reshape(imgA,ROWS_A*COLS_A,1));
-bVec = double(reshape(imgB,ROWS_B*COLS_B,1));
+aVec = double(reshape(imgA,ROWS*COLS,1));
+bVec = double(reshape(imgB,ROWS*COLS,1));
 
 %According to the formula
 
