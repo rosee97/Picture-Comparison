@@ -11,6 +11,7 @@ sdog_folder = './SampleDogs/';
 dbdogs_folder = './CroppedDogDB/';
 origindogs_folder='./DogDataBase/';
 rowDogs = {};
+
 for r = 1:1:45
     rowDogs = [rowDogs ['dog', num2str(r)]];
 end
@@ -32,77 +33,52 @@ closestGreyImage = '';
 counter = 1;
 counter2 = 2;
 
-for i=1:1:5
+    for i = 1:1:5
 
-    SampleDog=[sdog_folder, 'd',num2str(i),'.png'];
-    Isd= imread(SampleDog);
-    IcsdGrayScale = rgb2gray(Isd);
+        sdFileName = [ 'd',num2str(i),'.png'];
+        SampleDog=[sdog_folder, sdFileName ] ;
+        IsdbColor = imread(SampleDog);
+        IcsdbGrayScale = rgb2gray(IsdbColor);
+        currCorrScore = -1000;
+        maxCorrScore = -1000;
 
-    
-    for j=1:1:45
+            for j=1:1:45,
 
-        DBDogs=[dbdogs_folder,'dog',num2str(j),'.png'];
-        Idb= imread(DBDogs);
-        IqdbGrayScale = rgb2gray(Idb);
+                dbFileName = [ 'dog', num2str(j),'.png'];
+                DBDogs= [dbdogs_folder,dbFileName];
+                IdbColor = imread(DBDogs);
+                IqdbGrayScale = rgb2gray(IdbColor);
 
-        %Compute the correlation match score
-
-        currCorrScore = myCorrelationMatch(IcsdGrayScale, IqdbGrayScale);
-
-        %Store the correlation coefficient
-
-
-end
+                    %%%
+                    % compute the correlation match score
+                    %%
+                currCorrScore = myCorrelationMatch(IcsdbGrayScale, IqdbGrayScale);
 
 
-for i = 1:1:5
 
-    sdFileName = [ 'd',num2str(i),'.png'];
-    SampleDog=[sdog_folder, sdFileName ] ;
-    IsdbColor = imread(SampleDog);
-    IcsdbGrayScale = rgb2gray(IsdbColor);
-    currCorrScore = -1000;
-    maxCorrScore = -1000;
-    
-    for j=1:1:45,
+                if (currCorrScore > maxCorrScore) 
+                  maxCorrScore= currCorrScore;
+                  closestGreyImage = j;
+
+                end
+
+                if i==1
+                    d1(j,1)=currCorrScore;
+                elseif i==2
+                    d2(j,1)=currCorrScore;
+                elseif i==3
+                    d3(j,1)=currCorrScore;
+                elseif i==4
+                    d4(j,1)=currCorrScore;
+                elseif i==5
+                    d5(j,1)=currCorrScore;
+                end
+
+            end
+
         
-        dbFileName = [ 'dog', num2str(j),'.png'];
-        DBDogs= [dbdogs_folder,dbFileName];
-        IdbColor = imread(DBDogs);
-        IqdbGrayScale = rgb2gray(IdbColor);
-
-            %%%
-            % compute the correlation match score
-            %%
-        currCorrScore = myCorrelationMatch(IcsdbGrayScale, IqdbGrayScale);
-
-        
-
-        if (currCorrScore > maxCorrScore) 
-          maxCorrScore= currCorrScore;
-          closestGreyImage = j;
-          
-        end
-        
-        if i==1
-            d1(j,1)=currCorrScore;
-        elseif i==2
-            d2(j,1)=currCorrScore;
-        elseif i==3
-            d3(j,1)=currCorrScore;
-        elseif i==4
-            d4(j,1)=currCorrScore;
-        elseif i==5
-            d5(j,1)=currCorrScore;
-        end
-
     end
-        max(1,i)=maxCorrScore;
 
-        
-        end
-
-     end
 
 T=table(d1,d2,d3,d4,d5,...
     'RowNames',rowDogs) ;
