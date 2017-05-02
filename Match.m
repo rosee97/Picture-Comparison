@@ -132,18 +132,21 @@ T=table(d1,d2,d3,d4,d5,...
 mostThree=zeros(1,3);
 %Sorted the correlation 
 sorted_d1=sort(d1,'descend');
-sorted_d2=sort(d2, 'descend');
+sorted_d2=sort(d2,'descend');
 sorted_d3=sort(d3,'descend');
 sorted_d4=sort(d4,'descend');
 sorted_d5=sort(d5,'descend');
 %Get the name of the image
 
+x=1:1:45;
+
 for b = 1:1:5
+    
     figure(b);
     subplot(2,2,1)
     imshow([sdog_folder,'d',num2str(b),'.png']);
     title(['Sample: ',num2str(b)]);
-
+    
     if b==1
     figure(b);
      for k=1:1:3
@@ -156,6 +159,8 @@ for b = 1:1:5
                 title(['Dog: ',num2str(q),' Corr Score:', str]);
             end 
         end
+%         subplot(2,3,5);
+%         plot(x,d1)
      end
      
     elseif b==2
@@ -169,6 +174,8 @@ for b = 1:1:5
                 title(['Dog: ',num2str(q),' Corr Score:', str])
             end 
         end
+%         subplot(2,3,5);
+%         plot(x,d2)
      end
      
     elseif b==3
@@ -182,6 +189,8 @@ for b = 1:1:5
                 title(['Dog: ',num2str(q),' Corr Score:', str])
             end 
         end
+%         subplot(2,3,5);
+%         plot(x,d3)        
      end
     elseif b==4
      for m=1:1:3
@@ -194,6 +203,8 @@ for b = 1:1:5
                 title(['Dog: ',num2str(q),' Corr Score:', str])                
             end 
         end
+%         subplot(2,3,5);
+%         plot(x,d4)
      end
      
     elseif b==5
@@ -202,11 +213,13 @@ for b = 1:1:5
             if d5(q,1)==sorted_d5(n,1)
                 subplot(2,2,n+1);
                 imshow([origindogs_folder,'dog',num2str(q),'.png']);
-                str = num2str(d4(q,1));
+                str = num2str(d5(q,1));
                 str = str(1:5);
                 title(['Dog: ',num2str(q),' Corr Score:', str])
             end 
         end
+%         subplot(2,3,5);
+%         plot(x,d5)
      end
     end
 end
