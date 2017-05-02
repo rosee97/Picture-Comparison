@@ -10,13 +10,12 @@ close all;
 sdog_folder = './SampleDogs/';
 dbdogs_folder = './CroppedDogDB/';
 origindogs_folder='./DogDataBase/';
+rowDogs = {};
+for r = 1:1:45
+    rowDogs = [rowDogs ['dog', num2str(r)]];
+end
 
 
-rowDogs={'dog1','dog2','dog3','dog4','dog5','dog6','dog7','dog8','dog9','dog10',...
-    'dog11','dog12','dog13','dog14','dog15','dog16','dog17','dog18','dog19','dog20',...
-    'dog21','dog22','dog23','dog24','dog25','dog26','dog27','dog28','dog29','dog30',...
-    'dog31','dog32','dog33','dog34','dog35','dog36','dog37','dog38','dog39','dog40',...
-    'dog41','dog42','dog43','dog44','dog45'};
 d1=zeros(45,1);
 d2=zeros(45,1);
 d3=zeros(45,1);
@@ -24,17 +23,6 @@ d4=zeros(45,1);
 d5=zeros(45,1);
 
 % 
-sdog = {};
-
-% arrays with color
-% sdog1 = zeros(3, 45);
-% sdog2 = zeros(3, 45);
-% sdog3 = zeros(3, 45);
-% sdog4 = zeros(3, 45);
-% sdog5 = zeros(3, 45);
-
-maxCorrScores = zeros(5,2);
-
 %maxCorrScores = zeros(5,4);
 
 corrInfo = {};
@@ -43,10 +31,6 @@ closestGreyImage = '';
 % closestColorImage = '';
 counter = 1;
 counter2 = 2;
-
-
-max=zeros(1,5);
-
 
 for i=1:1:5
 
@@ -92,7 +76,7 @@ for i = 1:1:5
             %%
         currCorrScore = myCorrelationMatch(IcsdbGrayScale, IqdbGrayScale);
 
-        sdog = [sdog, {string(dbFileName), currCorrScore}];
+        
 
         if (currCorrScore > maxCorrScore) 
           maxCorrScore= currCorrScore;
@@ -118,12 +102,7 @@ for i = 1:1:5
         
         end
 
-        corrInfo = [corrInfo, {sdog}];
-
-        maxCorrScores(i,1) = closestGreyImage;
-        maxCorrScores(i,2) = maxCorrScore;
-
-        end
+     end
 
 T=table(d1,d2,d3,d4,d5,...
     'RowNames',rowDogs) ;
